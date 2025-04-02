@@ -88,3 +88,23 @@ MapaZzz é um desavio de um hackathon na 42Luanda, que tem como objectivo ajudar
   "dangerZone" : {...}
 }
 ```
+
+### Pegar muitas zonas de perigo, para sinalizacao do mapa das zonas de perigo
+
+**URL:** `/danger_zone/all`  
+**Método:** GET  
+**Descrição:** Pegar cada zona de cada vez.  
+
+**Body:**
+```json
+{
+  // Sem body
+}
+```
+**Resposta de Sucesso:**
+```json
+{
+  "message" : "...",
+  "dangerZone" : {...}
+}
+```

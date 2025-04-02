@@ -74,6 +74,21 @@ exports.getDangerZoneForReportage = async (req, res) => {
     }
 }
 
+exports.allZones = async (req, res) => {
+    try {
+        const allZones = await DangerZone.findAll();
+        return res.status(200).json({
+            message: "Todas as zonas de risco encontradas.",
+            dangerZones: allZones,
+        });       
+    }catch (error) {
+        return res.status(500).json({
+            message: "Erro ao buscar todas as zonas de risco.",
+            error: error.message,
+        });
+    }
+}
+
 exports.report = async (req, res) => {
     try {
         const userAuth = req.userId;
