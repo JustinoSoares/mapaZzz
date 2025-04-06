@@ -3,6 +3,8 @@ const {
     HarmCategory,
     HarmBlockThreshold,
 } = require("@google/generative-ai");
+const axios = require("axios");
+const path = require("path");
 
 const { GoogleAIFileManager } = require("@google/generative-ai/server");
 const fs = require("fs");
@@ -60,9 +62,18 @@ const model = genAI.getGenerativeModel({
 });
 
 // Função para converter o arquivo em base64
-function encodeFileToBase64(filePath) {
-    return fs.readFileSync(filePath, { encoding: 'base64' });
-}
+async function encodeFileToBase64(filePath) {
+    if (filePath.startsWith("http")) {
+      // É uma URL, vamos baixar a imagem e converter para base64
+      const response = await axios.get(filePath, {
+        responseType: "arraybuffer",
+      });
+      return Buffer.from(response.data, "binary").toString("base64");
+    } else {
+      // É um arquivo local
+      return fs.readFileSync(filePath, { encoding: "base64" });
+    }
+  }
 // Função para verificar se a URL da imagem é válida
 function isValidImageUrl(url) {
     const imageExtensions = [".jpg", ".jpeg", ".png"];
@@ -76,7 +87,7 @@ async function run(PATH_TO_FILE) {
                 message: "Imagem inválida." 
             }];
         }
-        const base64Image = encodeFileToBase64(PATH_TO_FILE);
+        const base64Image = await encodeFileToBase64(PATH_TO_FILE);
         const prompt = "Eu quero que você analise a imagem e diga se é \
                         uma zona de risco de malária, por menor risco que \
                         seja. e na descrição dê uma descrição leve de \

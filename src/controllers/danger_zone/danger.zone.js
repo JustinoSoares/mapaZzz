@@ -184,8 +184,7 @@ exports.register = async (req, res) => {
         });
     }
     const result = await run(image);
-
-    if (!result.isDangerZone) {
+    if (result.level_dange == "without") {
         return res.status(400).json({ 
             message: "A imagem não representa uma zona de risco.",
         });
@@ -228,4 +227,39 @@ exports.register = async (req, res) => {
         error: error.message
     });
 }
+}
+
+exports.deleteZone = async (req, res) => {
+    try {
+        const userAuth = req.userId;
+        const dangerZoneId = req.params.dangerZoneId;
+        const user = await User.findByPk(userAuth);
+        if (!user) {
+            return res.status(404).json({
+                message: "Usuário não encontrado."
+            });
+        }
+        const dangerZone = await DangerZone.findByPk(dangerZoneId);
+        if (!dangerZone) {
+            return res.status(404).json({
+                message: "Zona de risco não encontrada."
+            });
+        }
+        // Verifica se o usuário é o dono da zona de risco
+        if (dangerZone.userId !== userAuth && user.role !== "admin") {
+            return res.status(403).json({
+                message: "Você não tem permissão para deletar essa zona de risco."
+            });
+        }
+        // Deleta a zona de risco
+        await dangerZone.destroy();
+        return res.status(200).json({
+            message: "Zona de risco deletada com sucesso."
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Erro ao deletar zona de risco.",
+            error: error.message,
+        });
+    }
 }

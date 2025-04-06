@@ -6,7 +6,7 @@ const userAuthorization = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       status: false,
-      msg: "Acesso negado",
+      message: "Acesso negado",
     });
   }
   try {
@@ -14,7 +14,7 @@ const userAuthorization = (req, res, next) => {
     if (!decoded) {
       return res.status(401).json({
         status: false,
-        msg: "Acesso negado",
+        message: "Acesso negado",
       });
     }
     req.userId = decoded.id;
@@ -22,7 +22,7 @@ const userAuthorization = (req, res, next) => {
   } catch (error) {
     res.status(401).json({
       status: false,
-      msg: "Token inválido",
+      message: "Token inválido",
     });
   }
 };
@@ -32,7 +32,7 @@ const adminAuthorization = (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       status: false,
-      msg: "Acesso negado",
+      message: "Acesso negado",
     });
   }
   try {
@@ -40,13 +40,13 @@ const adminAuthorization = (req, res, next) => {
     if (!decoded) {
       return res.status(401).json({
         status: false,
-        msg: "Acesso negado",
+        message: "Acesso negado",
       });
     }
     if (decoded.role !== "admin") {
       return res.status(403).json({
         status: false,
-        msg: "Acesso negado",
+        message: "Acesso negado",
       });
     }
     req.userId = decoded.id;
@@ -54,7 +54,7 @@ const adminAuthorization = (req, res, next) => {
   } catch (error) {
     res.status(401).json({
       status: false,
-      msg: "Token inválido",
+      message: "Token inválido",
     });
   }
 };
