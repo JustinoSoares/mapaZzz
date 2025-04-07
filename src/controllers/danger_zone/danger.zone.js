@@ -7,6 +7,7 @@ const confirmation = db.confirmation;
 const { v4 : uuidv4 } = require("uuid");
 
 const { getAddressFromCoordinates } = require("../../general/geocoding");
+const { Op } = require("sequelize");
 
 // Função para verificar se a URL da imagem é válida
 function isValidImageUrl(url) {
@@ -40,16 +41,18 @@ exports.getDangerZoneForReportage = async (req, res) => {
                 message: "Usuário não encontrado."
             });
         }
-        // Busca todas as zonas de risco onde ele ainda não reportou
+        // Verifica se existem zonas de risco ativas
         const dangerZones = await DangerZone.findAll({
             where: {
                 status: "active",
             }
         });
 
+        // Busca todas as zonas de risco onde ele ainda não reportou
         const reports = await confirmation.findAll({
             where: {
                 userId: userAuth,
+                status: [Op.or("yes", "no", "no_yet")],
             }
         });
         // Filtra as zonas de risco que o usuário ainda não reportou
