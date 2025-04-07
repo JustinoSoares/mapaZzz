@@ -21,7 +21,38 @@ async function getCountryFlag (country) {
   }
 }
 
-
+exports.detalhes = async (req, res) => {
+  try {
+    console.log("req.userId", req.userId);
+    const userId = req.userId;
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ["password"] },
+    });
+    if (!user) {
+      return res.status(404).json({
+        status: false,
+        errors: [
+          {
+            message: "Usuário não encontrado",
+          },
+        ],
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+}
 
 exports.createUser = async (req, res) => {
   try {
@@ -124,3 +155,56 @@ exports.createUser = async (req, res) => {
     });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ["password"] },
+    });
+    return res.status(200).json({
+      status: true,
+      data: users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ["password"] },
+    });
+    if (!user) {
+      return res.status(404).json({
+        status: false,
+        errors: [
+          {
+            message: "Usuário não encontrado",
+          },
+        ],
+      });
+    }
+    return res.status(200).json({
+      status: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+}
