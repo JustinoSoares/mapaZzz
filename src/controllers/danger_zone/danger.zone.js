@@ -52,7 +52,6 @@ exports.getDangerZoneForReportage = async (req, res) => {
         const reports = await confirmation.findAll({
             where: {
                 userId: userAuth,
-                status: [Op.or("yes", "no", "no_yet")],
             }
         });
         // Filtra as zonas de risco que o usuário ainda não reportou
