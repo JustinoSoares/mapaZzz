@@ -32,6 +32,52 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
     return R * c; // Distância em metros
 };
 
+exports.approach = async (req, res) => {
+    try {
+        const {lat, lon} = req.query;
+        if (!lat || !lon) {
+            return res.status(400).json({
+                message: "Latitude e Longitude são obrigatórios."
+            });
+        }
+        // Verifica se existem zonas de risco ativas
+        const dangerZones = await DangerZone.findAll({
+            where: {
+                status: "active",
+            }
+        });
+
+        for (const zone of dangerZones) {
+            const distance = haversineDistance(lat, lon, zone.lat, zone.lon);
+            if (distance < 2) {
+              // usar web socket para enviar a notificação
+              const io = req.app.get("socketio");
+                if (io) {
+                    io.emit("dangerZoneNotification", {
+                        message: "Você está se aproximando de uma zona de risco.",
+                        zone: zone,
+                    });
+                    console.log("Você está se aproximando de uma zona de risco.");
+                }
+                return res.status(200).json({
+                    message: "Zonas de risco encontradas.",
+                    dangerZones,
+                });
+            }
+            return res.status(404).json({
+                message: "Nenhuma zona de risco encontrada.",
+                dangerZones: [],
+            });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            message: "Erro ao buscar zonas de risco.",
+            error: error.message,
+        });
+    }
+}
+
 exports.getDangerZoneForReportage = async (req, res) => {
     try {
         const userAuth = req.userId;
