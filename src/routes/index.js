@@ -3,6 +3,7 @@ const router = express.Router();
 const routerUser = require('./users/users.route');
 const routerAuth = require('./auth/auth');
 const routerDangerZone = require('./danger_zone/danger_zone');
+const routerGame = require('./game/index');
 
 
 const controllerTest = require('../controllers/danger_zone/ImageIsDangerZone');
@@ -18,6 +19,7 @@ router.post("/analizar", controllerTest.AnalicyImage);
 router.use('/', routerUser);
 router.use('/', routerAuth);
 router.use('/', routerDangerZone);
+router.use('/', routerGame);
 
 
 module.exports = router;
