@@ -22,6 +22,24 @@ module.exports = {
         allowNull: false,
         defaultValue: 'alerta'
       },
+      userId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: 'Users', // Nome da tabela referenciada
+          key: 'id' // Chave primária da tabela referenciada
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      users: {
+        type: Sequelize.JSON,
+        allowNull: true,
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       describe: {
         type: Sequelize.STRING
       },

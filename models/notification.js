@@ -33,6 +33,24 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'low'
     },
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: 'Users', // Nome da tabela referenciada
+        key: 'id' // Chave primária da tabela referenciada
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
+    },
+    users: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     describe: {
       type: DataTypes.STRING
     },

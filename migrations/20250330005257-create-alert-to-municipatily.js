@@ -33,6 +33,26 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      municipalityId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: 'municipalities', // Nome da tabela referenciada
+          key: 'id' // Chave primária da tabela referenciada
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+      userId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: 'Users', // Nome da tabela referenciada
+          key: 'id' // Chave primária da tabela referenciada
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
