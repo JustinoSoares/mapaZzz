@@ -45,15 +45,7 @@ exports.climate = async (req, res) => {
     const rained = precipitationData.some((entry) => entry.precipitation > 0);
 
     if (rained) {
-      // Emitir notificação via Socket.IO
-       const io = req.app.get('socketio');
-         io.emit('notification_climate', {
-          type: 'clima',
-          message: 'Choveu nos últimos 2 dias.',
-          data: precipitationData,
-      });
-
-      // criar uma notificação no banco de dados
+     // criar uma notificação no banco de dados
       const notificationCreated = await notification.create({
           lat: latitude,
           lon: longitude,
@@ -63,6 +55,15 @@ exports.climate = async (req, res) => {
           userId: userId,
           users: [],
         });
+      // Emitir notificação via Socket.IO
+       const io = req.app.get('socketio');
+         io.emit('notification_climate', {
+          type: 'clima',
+          message: 'Choveu nos últimos 2 dias.',
+          data: notificationCreated,
+      });
+
+     
       return res.status(200).json({ 
         message: 'Choveu nos últimos 2 dias.',
         notificationCreated,
