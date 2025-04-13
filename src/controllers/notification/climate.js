@@ -106,6 +106,10 @@ exports.approach_danger_zone = async (req, res) => {
         io.emit('notification', {
             data: notificationCreate,
         });
+        return res.status(200).json({
+            message: 'Notificação criada com sucesso.',
+            notificationCreate,
+        });
     } catch (error) {
         return res.status(500).json({ 
             error: 'Erro ao criar notificação' ,
@@ -139,6 +143,10 @@ exports.game = async (req, res) => {
         const io = req.app.get('socketio');
         io.emit('notification', {
             data: notificationCreate,
+        });
+        return res.status(200).json({
+            message: 'Notificação criada com sucesso.',
+            notificationCreate,
         });
     } catch (error) {
         return res.status(500).json({ 
