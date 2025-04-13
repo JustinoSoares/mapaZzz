@@ -265,6 +265,20 @@ exports.register = async (req, res) => {
         address: fullAddress || null,
         userId: userAuth,
     });
+    const notification = await notification.create({
+        lat,
+        lon,
+        typeNotification: 'surto',
+        title: 'Nova zona de perigo',
+        describe: 'Uma nova zona de perigo foi criada, tenha muita atenção com a malária, proteja a si e aos teus',
+        userId: userId,
+        users: [],
+    });
+    // Emitir notificação via Socket.IO
+    const io = req.app.get('socketio');
+    io.emit('notification', {
+        data: notification,
+    });
     return res.status(201).json({ 
         message: "Zona de risco cadastrada com sucesso!", 
         zone: newZone 

@@ -51,7 +51,7 @@ exports.climate = async (req, res) => {
           lon: longitude,
           typeNotification: 'clima',
           title: 'Chuva detectada',
-          describe: 'Choveu nos últimos 2 dias.',
+          describe: 'Choveu nos últimos 2 dias, tenha muita atenção com a malária, proteja a si e aos teus',
           userId: userId,
           users: [],
         });
@@ -71,6 +71,74 @@ exports.climate = async (req, res) => {
     }
         return res.status(200).json({ 
             message: 'Não choveu nos últimos 2 dias.' 
+        });
+    } catch (error) {
+        return res.status(500).json({ 
+            error: 'Erro ao criar notificação' ,
+            message: error.message
+        });
+    }
+}
+
+exports.approach_danger_zone = async (req, res) => {
+    const { latitude, longitude} = req.query;
+
+    const userId = req.userId;
+
+    if (!latitude || !longitude || !userId) {
+        return res.status(400).json({ 
+            message: 'Latitude, longitude e userId são obrigatórios.' 
+        });
+    }
+    
+    try {
+        const notification = await notification.create({
+            lat: latitude,
+            lon: longitude,
+            typeNotification: 'alerta',
+            title: 'Perigo',
+            describe: 'Você está se aproximando de uma zona de perigo, tenha muita atenção com a malária, proteja a si e aos teus',
+            userId: userId,
+            users: [],
+        });
+        // Emitir notificação via Socket.IO
+        const io = req.app.get('socketio');
+        io.emit('notification', {
+            data: notification,
+        });
+    } catch (error) {
+        return res.status(500).json({ 
+            error: 'Erro ao criar notificação' ,
+            message: error.message
+        });
+    }
+}
+
+exports.game = async (req, res) => {
+    const { latitude, longitude} = req.query;
+
+    const userId = req.userId;
+
+    if (!latitude || !longitude || !userId) {
+        return res.status(400).json({ 
+            message: 'Latitude, longitude e userId são obrigatórios.' 
+        });
+    }
+    
+    try {
+        const notification = await notification.create({
+            lat: latitude,
+            lon: longitude,
+            typeNotification: 'educação',
+            title: 'Jogo',
+            describe: 'Vamos ver se você sabe como se prevenir da malária, responda a pergunta',
+            userId: userId,
+            users: [],
+        });
+        // Emitir notificação via Socket.IO
+        const io = req.app.get('socketio');
+        io.emit('notification', {
+            data: notification,
         });
     } catch (error) {
         return res.status(500).json({ 
