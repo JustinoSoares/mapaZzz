@@ -78,3 +78,29 @@ exports.climate = async (req, res) => {
         });
     }
 }
+
+exports.getNotification = async (req, res) => {
+    const { userId } = req.query;
+
+    if (!userId) {
+        return res.status(400).json({ 
+            message: 'userId é obrigatório.' 
+        });
+    }
+
+    try {
+        const notifications = await notification.findAll({
+            where: { userId },
+            order: [['createdAt', 'DESC']],
+        });
+
+        return res.status(200).json({ 
+            notifications 
+        });
+    } catch (error) {
+        return res.status(500).json({ 
+            error: 'Erro ao buscar notificações' ,
+            message: error.message
+        });
+    }
+}
