@@ -57,7 +57,7 @@ exports.climate = async (req, res) => {
         });
       // Emitir notificação via Socket.IO
        const io = req.app.get('socketio');
-         io.emit('notification_climate', {
+         io.emit('notification', {
           type: 'clima',
           message: 'Choveu nos últimos 2 dias.',
           data: notificationCreated,
