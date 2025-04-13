@@ -92,7 +92,7 @@ exports.approach_danger_zone = async (req, res) => {
     }
     
     try {
-        const notification = await notification.create({
+        const notificationCreate = await notification.create({
             lat: latitude,
             lon: longitude,
             typeNotification: 'alerta',
@@ -104,7 +104,7 @@ exports.approach_danger_zone = async (req, res) => {
         // Emitir notificação via Socket.IO
         const io = req.app.get('socketio');
         io.emit('notification', {
-            data: notification,
+            data: notificationCreate,
         });
     } catch (error) {
         return res.status(500).json({ 
@@ -126,7 +126,7 @@ exports.game = async (req, res) => {
     }
     
     try {
-        const notification = await notification.create({
+        const notificationCreate = await notification.create({
             lat: latitude,
             lon: longitude,
             typeNotification: 'educação',
@@ -138,7 +138,7 @@ exports.game = async (req, res) => {
         // Emitir notificação via Socket.IO
         const io = req.app.get('socketio');
         io.emit('notification', {
-            data: notification,
+            data: notificationCreate,
         });
     } catch (error) {
         return res.status(500).json({ 
