@@ -35,6 +35,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         defaultValue: 0
       },
+      objectsFinds: {
+        type: Sequelize.JSON,
+        defaultValue: []
+      },
+      how_to_help: {
+        type: Sequelize.STRING,
+        defaultValue: ''
+      },
       status: {
         type: Sequelize.ENUM('active', 'inactive'),
         defaultValue: 'active'

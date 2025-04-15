@@ -23,24 +23,32 @@ module.exports = (sequelize, DataTypes) => {
     level: {
       type: DataTypes.ENUM('low', 'medium', 'high'),
       defaultValue: 'low'
-    }
-    , description: DataTypes.STRING,
-    image: DataTypes.STRING
-    , lat: DataTypes.DECIMAL(10, 8)
-    , lon: DataTypes.DECIMAL(11, 8)
-    , confirmations: {
+    }, 
+    description: DataTypes.STRING,
+    image: DataTypes.STRING,
+    lat: DataTypes.DECIMAL(10, 8), 
+    lon: DataTypes.DECIMAL(11, 8), 
+    confirmations: {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
     address: {
       type: DataTypes.STRING,
       allowNull: true,
-    }
-    , status: {
+    },
+    status: {
       type: DataTypes.ENUM('active', 'inactive'),
       defaultValue: 'active'
-    }
-    , userId: {
+    }, 
+    objectsFinds: {
+      type: DataTypes.JSON,
+      defaultValue: []
+    },
+    how_to_help: {
+      type: DataTypes.STRING,
+      defaultValue: ''
+    },
+    userId: {
       type: DataTypes.STRING,
       references: {
         model: 'Users',
@@ -48,12 +56,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
-    }
-    , createdAt: {
+    },
+    createdAt: {
       allowNull: false,
       type: DataTypes.DATE
-    }
-    , updatedAt: {
+    },
+    updatedAt: {
       allowNull: false,
       type: DataTypes.DATE
     }

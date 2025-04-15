@@ -5,6 +5,7 @@ const routerAuth = require('./auth/auth');
 const routerDangerZone = require('./danger_zone/danger_zone');
 const routerGame = require('./game/index');
 const routerNotification = require('./notification/index');
+const routerHospital = require('./api_hospital/index');
 
 
 const controllerTest = require('../controllers/danger_zone/ImageIsDangerZone');
@@ -22,6 +23,7 @@ router.use('/', routerAuth);
 router.use('/', routerDangerZone);
 router.use('/', routerGame);
 router.use('/', routerNotification);
+router.use('/', routerHospital);
 
 
 module.exports = router;

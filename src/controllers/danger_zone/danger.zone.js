@@ -262,6 +262,7 @@ exports.register = async (req, res) => {
         lon,
         description : result.description,
         level : result.level_dange,
+        objectsFinds : result.objectsFinds,
         address: fullAddress || null,
         userId: userAuth,
     });
@@ -271,7 +272,7 @@ exports.register = async (req, res) => {
         typeNotification: 'surto',
         title: 'Nova zona de perigo',
         describe: 'Uma nova zona de perigo foi criada, tenha muita atenção com a malária, proteja a si e aos teus',
-        userId: userId,
+        userId: userAuth,
         users: [],
     });
     // Emitir notificação via Socket.IO

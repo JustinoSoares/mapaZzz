@@ -24,7 +24,7 @@ module.exports = {
       },
       userId: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Users', // Nome da tabela referenciada
           key: 'id' // Chave primária da tabela referenciada
