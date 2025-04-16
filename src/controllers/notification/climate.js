@@ -3,6 +3,7 @@ const db = require('../../../models/index');
 const { Op } = require('sequelize');
 const  notification  = db.notification;
 const User = db.User;
+const DangerZone = db.danger_zone;
 
 exports.climate = async (req, res) => {
     const { latitude, longitude, past_days = 2, userId } = req.query;
@@ -119,7 +120,7 @@ exports.approach_danger_zone = async (req, res) => {
     }
 }
 
-exports.game = async (req, res) => {
+exports.game = async (req, res) => { 
     const { latitude, longitude} = req.query;
 
     const userId = req.userId;
@@ -137,7 +138,7 @@ exports.game = async (req, res) => {
             typeNotification: 'educação',
             title: 'Jogo',
             describe: 'Vamos ver se você sabe como se prevenir da malária, responda a pergunta',
-            userId: userId,
+            userId: null,
             users: [],
         });
         // Emitir notificação via Socket.IO
@@ -148,6 +149,38 @@ exports.game = async (req, res) => {
         return res.status(200).json({
             message: 'Notificação criada com sucesso.',
             notificationCreate,
+        });
+    } catch (error) {
+        return res.status(500).json({ 
+            error: 'Erro ao criar notificação' ,
+            message: error.message
+        });
+    }
+}
+
+exports.new_danger_zone = async (req, res) => {
+    const last_danger_zone = await DangerZone.findOne({
+        order: [['createdAt', 'DESC']],
+    });
+    
+    try {
+
+    const notificationData = await notification.create({
+        lat : last_danger_zone.lat,
+        lon : last_danger_zone.lon,
+        typeNotification: 'surto',
+        title: 'Nova zona de perigo',
+        describe: `Uma nova zona de perigo foi Reportada em ${last_danger_zone.address}, tenha muita atenção com a malária, proteja a si e aos teus`,
+        userId: null,
+        users: [],
+    });
+    // Emitir notificação via Socket.IO
+    const io = req.app.get('socketio');
+    io.emit('notification', {
+        data: notificationData,
+    });
+        return res.status(200).json({
+            message: 'Notificação criada com sucesso.',
         });
     } catch (error) {
         return res.status(500).json({ 
