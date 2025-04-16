@@ -285,7 +285,6 @@ exports.register = async (req, res) => {
     return res.status(201).json({ 
         message: "Zona de risco cadastrada com sucesso!", 
         zone: newZone,
-        notification: notificationData,
     });
 } catch (error) {
     return res.status(500).json({ 
