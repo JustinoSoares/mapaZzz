@@ -4,6 +4,7 @@ const { run } = require("../../general/trainingAi");
 const User = db.User;
 const DangerZone = db.danger_zone;
 const confirmation = db.confirmation;
+const  notification  = db.notification;
 const { v4 : uuidv4 } = require("uuid");
 
 const { getAddressFromCoordinates } = require("../../general/geocoding");
@@ -263,26 +264,28 @@ exports.register = async (req, res) => {
         description : result.description,
         level : result.level_dange,
         objectsFinds : result.objectsFinds,
+        how_to_help : result.how_to_help,
         address: fullAddress || null,
         userId: userAuth,
     });
-    const notification = await notification.create({
+    const notificationData = await notification.create({
         lat,
         lon,
         typeNotification: 'surto',
         title: 'Nova zona de perigo',
         describe: 'Uma nova zona de perigo foi criada, tenha muita atenção com a malária, proteja a si e aos teus',
-        userId: userAuth,
+        userId: null,
         users: [],
     });
     // Emitir notificação via Socket.IO
     const io = req.app.get('socketio');
     io.emit('notification', {
-        data: notification,
+        data: notificationData,
     });
     return res.status(201).json({ 
         message: "Zona de risco cadastrada com sucesso!", 
-        zone: newZone 
+        zone: newZone,
+        notification: notificationData,
     });
 } catch (error) {
     return res.status(500).json({ 

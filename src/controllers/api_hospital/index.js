@@ -42,7 +42,7 @@ exports.danger_zones = async (req, res) => {
                     id: zone.id,
                     address: zone.address,
                     description: zone.description,
-                    data_reported: zone.createdAt,
+                    date_reported: zone.createdAt,
                     photo: zone.image,
                     latitude: zone.lat,
                     longitude: zone.lon,
@@ -50,7 +50,7 @@ exports.danger_zones = async (req, res) => {
                     danger_level: zone.level,
                     number_checkers: numberCheckers.length || 0,
                     number_no_checkers: numberNoCheckers.length || 0,
-                    how_to_help: zone.howToHelp || "",
+                    how_to_help: zone.how_to_help || "",
                     createdAt: zone.createdAt,
                     updatedAt: zone.updatedAt,
                 };
@@ -94,7 +94,7 @@ try {
                 photo: zoneData.image,
                 latitude: zoneData.lat,
                 longitude: zoneData.lon,
-                number_checkers: zone.count || 0,
+                number_checkers: zoneData.length || 0,
             };
         })
     );
@@ -133,6 +133,17 @@ exports.statistics = async (req, res) => {
             }),
         });
 
+        const totalDangerZonesResolved = await confirmation.count({
+            where: {
+                status: "no_yet",
+            },
+            group: ["dangerZoneId"],
+            having: db.sequelize.where(db.sequelize.fn("COUNT", db.sequelize.col("dangerZoneId")), {
+                [db.Sequelize.Op.gte]: 1000,
+            }),
+        });
+
+
         return res.status(200).json({
             message: "Statistics fetched successfully",
             statistics: {
@@ -140,7 +151,7 @@ exports.statistics = async (req, res) => {
                 total_danger_zones: totalDangerZones,
                 total_confirmations: totalConfirmations,
                 pedding_zones : totalDangerZonesWithConfirmations.length,
-                resolved_zones : totalDangerZones - totalDangerZonesWithConfirmations,
+                resolved_zones : totalDangerZonesResolved.length,
             },
         });
     } catch (error) {

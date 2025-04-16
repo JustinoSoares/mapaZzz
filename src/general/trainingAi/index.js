@@ -55,6 +55,10 @@ const model = genAI.getGenerativeModel({
                     type: "string",
                     description: "Descrição da imagem analisada"
                 },
+                how_to_help: {
+                    type: "string",
+                    description: "Como as instituições de saúde podem ajudar nessa zona"
+                },
             },
             required: ["isDangerZone", "level_dange"]
         },
@@ -91,12 +95,13 @@ async function run(PATH_TO_FILE) {
         const prompt = "Eu quero que você analise a imagem e diga se é \
                         uma zona de risco de malária, por menor risco que \
                         seja. e na descrição dê uma descrição leve de \
-                        cuidado com essa zona e não pode passae de 200 \
+                        cuidado com essa zona e não pode passar de 200 \
                         caracteres. Se não for uma zona de risco, diga que\
                         não é uma zona de risco e não pode passar de 200\
                         caracteres. E não pode ser uma resposta padrão, \
                         tem que ser algo mais humano e leve. E a resposta \
-                        tem que ser em português.";
+                        tem que ser em português. e o how_to_help diga como as instituições \
+                        de saúde podem ajudar aquela zona. ";
 
         const requestBody = {
             contents: [
