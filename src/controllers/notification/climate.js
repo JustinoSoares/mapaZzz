@@ -1,5 +1,6 @@
 const axios = require('axios');
 const db = require('../../../models/index');
+const { Op } = require('sequelize');
 const  notification  = db.notification;
 const User = db.User;
 
@@ -166,8 +167,14 @@ exports.getNotification = async (req, res) => {
     }
 
     try {
+        // pegar as notificações do usuário ou que o userId é null
         const notifications = await notification.findAll({
-            where: { userId },
+            Op: {
+                [Op.or]: [
+                    { userId: null },
+                    { userId: userId }
+                ]
+            },
             order: [['createdAt', 'DESC']],
         });
 
