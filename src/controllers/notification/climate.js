@@ -169,7 +169,7 @@ exports.getNotification = async (req, res) => {
     try {
         // pegar as notificações do usuário ou que o userId é null
         const notifications = await notification.findAll({
-            Op: {
+            where:{
                 [Op.or]: [
                     { userId: null },
                     { userId: userId }
