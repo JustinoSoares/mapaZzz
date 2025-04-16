@@ -27,7 +27,7 @@ const port = process.env.PORT || 3000;
 const io = new Server(server, {
   cors: {
     //permitir apenas os dois dominios seguintes
-    origin: [process.env.URL_LOCAL, process.env.URL_FRONTEND],
+    origin: "*",
   },
 });
 app.use(async (req, res, next) => {
@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
 });
 app.use(
   cors({
-    origin: [process.env.URL_LOCAL, process.env.URL_FRONTEND], // Permitir apenas este domínio
+    origin: "*", // Permitir apenas este domínio
     methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
     allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
   })
