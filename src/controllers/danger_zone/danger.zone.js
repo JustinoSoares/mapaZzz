@@ -253,7 +253,7 @@ exports.register = async (req, res) => {
     let fullAddress = null;
     if (address) {
         // Formatar o endereço completo
-        fullAddress = `${address.country}, ${address.state}, ${address.city}, ${address.street}`; 
+        fullAddress = `${address.country}, ${address.city}`; 
     }
 
     //criar nova zona de risco
@@ -273,7 +273,7 @@ exports.register = async (req, res) => {
         lon,
         typeNotification: 'surto',
         title: 'Nova zona de perigo',
-        describe: 'Uma nova zona de perigo foi criada, tenha muita atenção com a malária, proteja a si e aos teus',
+        describe: `Uma nova zona de perigo foi Reportada em ${address}, tenha muita atenção com a malária, proteja a si e aos teus`,
         userId: null,
         users: [],
     });
