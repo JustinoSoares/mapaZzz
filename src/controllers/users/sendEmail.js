@@ -45,6 +45,9 @@ const send_email = async (name, email, about, dangerZone) => {
         Oferece: ${about}
         objectos na Zona de risco: ${arrayToText(dangerZone.objectsFinds)}
         Nível de perigo: ${dangerZone.level}, identificado por IA
+        Endereço da zona de risco: ${dangerZone.address}
+        Latitude: ${dangerZone.latitude}
+        Longitude: ${dangerZone.longitude}
     `;
    
         const result = await main(textoOrganizacao);
