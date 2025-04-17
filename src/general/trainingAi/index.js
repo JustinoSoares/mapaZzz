@@ -12,7 +12,7 @@ const mime = require("mime-types");
 require("dotenv").config();
 
 const apiKey = process.env.GEMINI_API_KEY;
-console.log(apiKey);
+// console.log(apiKey);
 const genAI = new GoogleGenerativeAI(apiKey);
 const fileManager = new GoogleAIFileManager(apiKey);
 

@@ -6,7 +6,8 @@ const DangerZone = db.danger_zone;
 const confirmation = db.confirmation;
 const  notification  = db.notification;
 const { v4 : uuidv4 } = require("uuid");
-
+const { send_email } = require("../../controllers/users/sendEmail");
+const  help  = db.help;
 const { getAddressFromCoordinates } = require("../../general/geocoding");
 const { Op } = require("sequelize");
 
@@ -282,6 +283,22 @@ exports.register = async (req, res) => {
     io.emit('notification', {
         data: notificationData,
     });
+    // Enviar email para todas instituições de apoio
+    const allHelpers = await help.findAll({
+        where: {
+            kind: "helpOrganization",
+        }
+    });
+     for (const helper of allHelpers) {
+         const { name, email, message } = helper;
+         const emailData = {
+             name,
+             email,
+             about: message,
+             dangerZones: newZone,
+         };
+         await send_email(name, email, message, newZone);
+     }
     return res.status(201).json({ 
         message: "Zona de risco cadastrada com sucesso!", 
         zone: newZone,

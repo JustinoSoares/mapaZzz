@@ -13,7 +13,7 @@ const { Json } = require("sequelize/lib/utils");
   const genAI = new GoogleGenerativeAI(apiKey);
   
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-pro-exp-03-25",
+    model: "gemini-1.5-pro-latest",
     systemInstruction: "Estou a fazer um projecto de combate a malária, e o principal objectivo é a prevenção conscencialização da população sobre os surtos, e eu quero alertar todos os dias sobre o surto de malária, dando uma recomendação leve e não chata",
   });
   
@@ -103,5 +103,6 @@ const { Json } = require("sequelize/lib/utils");
     }
     return JSON.parse(result.response.text());
   }
+  run();
   
   module.exports = { run };

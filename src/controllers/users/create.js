@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const db = require("../../../models"); // Importa todos os modelos
 const User = db.User; // Certifique-se de que o nome do modelo está correto
+const DangerZone = db.danger_zone;
 const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const { getCoordinates } = require("../../general/geocoding");
@@ -38,9 +39,26 @@ exports.detalhes = async (req, res) => {
         ],
       });
     }
+
+    const danger_zone = await DangerZone.findAll({
+     order : [['createdAt', 'DESC']],
+      limit: 5,
+    });
+    const danger_zonesOwner = await DangerZone.count({
+      where: {
+        userId: userId,
+      },
+    });
+    
+
     return res.status(200).json({
       status: true,
       data: user,
+      detalhes : {
+        danger_zones: danger_zone,
+        quantidade_danger_zones: danger_zone.length,
+        danger_zonesOwner: danger_zonesOwner,
+      },
     });
   } catch (error) {
     return res.status(500).json({
