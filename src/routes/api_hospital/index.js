@@ -10,5 +10,4 @@ router.get("/hospital/most_effected", most_effected);
 router.get("/hospital/statistics", statistics);
 router.post("/hospital/nearby", nearbyHospitals);
 
-
-module.exports = router;         
+module.exports = router;

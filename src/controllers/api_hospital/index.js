@@ -245,6 +245,8 @@ exports.nearbyHospitals = async (req, res) => {
           all_evaluations: info.user_ratings_total,
           distance: distanciaInfo.distance?.text,
           duration: distanciaInfo.duration?.text,
+          latitude : info.geometry.location.lat,
+          longitude : info.geometry.location.lng,
 
         };
       })
