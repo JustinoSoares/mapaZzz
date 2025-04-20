@@ -121,17 +121,11 @@ const welcome = async (name, email) => {
                       "
               >
           <div style="display : flex; justify-content: center; align-items :center; gap: 5px;">
-       
-          <h1
-          style="
-            color: #7f1734, 
-            background-color : grey,
-          "
-          >MapaZZZ</h1>
+          <h1>MapaZZZ</h1>
           </div>
         </div>
         <h3>Muito obrigado por se Juntar a nós!</h3>
-        <p>A sua perfil foi criado com sucesso, agora irá receber forma que poderá ajudar a combater a malária</p>
+        <p>Seu perfil foi criado com sucesso! A partir de agora, você começará a receber informações e orientações sobre as diversas formas de contribuir no combate à malária. Juntos, podemos fazer a diferença e ajudar a proteger comunidades afetadas por essa doença.</p>
         <div
           style="
             padding: 2px 30px;
