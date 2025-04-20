@@ -8,10 +8,10 @@ const {
   require("dotenv").config();
   
   const apiKey = process.env.GEMINI_API_KEY;
+  const modelEnv  = process.env.GEMINI_MODEL;
   const genAI = new GoogleGenerativeAI(apiKey);
-  
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro-latest",
+    model: modelEnv || "gemini-1.5-pro-latest",
     systemInstruction: "Estou a fazer um projecto de combate a malária, e o principal objectivo é a prevenção conscencialização da população sobre os surtos, e eu quero criar um jogo interessante e educativo para os meu usuários, e o jogo consiste em que o meu programa vai formular um problema curto relacionado ao assunto e ele deve respoder",
   });
   

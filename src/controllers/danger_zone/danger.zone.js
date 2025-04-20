@@ -1,6 +1,6 @@
 
 const db = require("../../../models");
-const { run } = require("../../general/trainingAi");
+
 const User = db.User;
 const DangerZone = db.danger_zone;
 const confirmation = db.confirmation;
@@ -206,6 +206,7 @@ exports.report = async (req, res) => {
 }
 
 exports.register = async (req, res) => {
+    const { run } = require("../../general/trainingAi");
     try{
     const userAuth = req.userId;  
     const {image, lat, lon} = req.body;
