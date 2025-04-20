@@ -8,7 +8,7 @@ const { danger_zones, most_effected,statistics, nearbyHospitals } = require("../
 router.get("/hospital/danger_zones", danger_zones);
 router.get("/hospital/most_effected", most_effected);
 router.get("/hospital/statistics", statistics);
-router.get("/hospital/nearby", nearbyHospitals);
+router.post("/hospital/nearby", nearbyHospitals);
 
 
 module.exports = router;         
