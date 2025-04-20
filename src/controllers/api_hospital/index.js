@@ -185,7 +185,6 @@ exports.nearbyHospitals = async (req, res) => {
       });
     }
     const googleKey = process.env.GOOGLE_MAPS_KEY;
-    
 
     // 1. Buscar hospitais próximos
     const nearby = await axios.get(
@@ -200,61 +199,69 @@ exports.nearbyHospitals = async (req, res) => {
       }
     );
 
+    console.log("Hospitais encontrados:", nearby.data);
     const hospitais = nearby.data.results;
-
+    console.log("Hospitais brutos:", JSON.stringify(hospitais, null, 2));
     // 2. Buscar detalhes para cada hospital
     const detalhesHospitais = await Promise.all(
       hospitais.map(async (hospital) => {
-        const placeId = hospital.place_id;
-        // 2.1. Obter detalhes com Place Details API
-        const detalhes = await axios.get(
-          "https://maps.googleapis.com/maps/api/place/details/json",
-          {
-            params: {
-              place_id: placeId,
-              key: googleKey,
-              fields:
-                "name,formatted_address,formatted_phone_number,geometry,opening_hours,rating,user_ratings_total",
-            },
-          }
-        );
+        try {
+          const placeId = hospital.place_id;
+          const detalhes = await axios.get(
+            "https://maps.googleapis.com/maps/api/place/details/json",
+            {
+              params: {
+                place_id: placeId,
+                key: googleKey,
+                fields:
+                  "name,formatted_address,formatted_phone_number,geometry,opening_hours,rating,user_ratings_total",
+              },
+            }
+          );
 
-        const info = detalhes.data.result;
+          const info = detalhes.data.result;
 
-        // 2.2. Calcular distância com Distance Matrix API
-        const distancia = await axios.get(
-          "https://maps.googleapis.com/maps/api/distancematrix/json",
-          {
-            params: {
-              origins: `${latitude},${longitude}`,
-              destinations: `${info.geometry.location.lat},${info.geometry.location.lng}`,
-              key: googleKey,
-              mode: "driving",
-            },
-          }
-        );
+          const distancia = await axios.get(
+            "https://maps.googleapis.com/maps/api/distancematrix/json",
+            {
+              params: {
+                origins: `${latitude},${longitude}`,
+                destinations: `${info.geometry.location.lat},${info.geometry.location.lng}`,
+                key: googleKey,
+                mode: "driving",
+              },
+            }
+          );
 
-        const distanciaInfo = distancia.data.rows[0].elements[0];
+          const distanciaInfo = distancia.data.rows[0].elements[0];
 
-        return {
-          name: info.name,
-          address: info.formatted_address,
-          phone: info.formatted_phone_number || "Telefone não disponível",
-          is_open: info.opening_hours?.open_now || false,
-          eval: info.rating,
-          all_evaluations: info.user_ratings_total,
-          distance: distanciaInfo.distance?.text,
-          duration: distanciaInfo.duration?.text,
-          latitude : info.geometry.location.lat,
-          longitude : info.geometry.location.lng,
-
-        };
+          return {
+            name: info.name,
+            address: info.formatted_address,
+            phone: info.formatted_phone_number || "Telefone não disponível",
+            is_open: info.opening_hours?.open_now || false,
+            eval: info.rating,
+            all_evaluations: info.user_ratings_total,
+            distance: distanciaInfo.distance?.text,
+            duration: distanciaInfo.duration?.text,
+            duration_value: distanciaInfo.duration?.value,
+            latitude: info.geometry.location.lat,
+            longitude: info.geometry.location.lng,
+          };
+        } catch (err) {
+          console.error("Erro ao buscar detalhes de hospital:", err.message);
+          return null; // ou retorne info parcial se quiser
+        }
       })
     );
     // 3. Ordenar do mais próximo ao mais distante
-    detalhesHospitais.sort((a, b) => a.duration - b.duration);
+    // Filtrar hospitais nulos
+    const filtrado = detalhesHospitais.filter((h) => h !== null);
 
-    return res.json(detalhesHospitais);
+    // Ordenar
+    filtrado.sort((a, b) => a.duration_value - b.duration_value);
+
+    return res.json(filtrado);
   } catch (error) {
     console.error("Erro ao buscar hospitais:", error.message);
     return res.status(500).json({ error: "Erro ao buscar hospitais" });
