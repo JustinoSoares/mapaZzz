@@ -5,10 +5,8 @@ const db = require('../../../models/index');
 const notification = db.notification;
 exports.getQuestion = async (req, res) => {
     try {
-
         // Call the function to get the question
         const question = await Question.run();
-
         // Send the result back to the client
         res.json(question);
     } catch (error) {
