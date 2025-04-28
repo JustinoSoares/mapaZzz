@@ -184,7 +184,7 @@ exports.nearbyHospitals = async (req, res) => {
         message: "Dados de localização inválido",
       });
     }
-    const googleKey = process.env.GOOGLE_MAPS_KEY;
+    const googleKey = "AIzaSyCnRdV8XWB0p04Aa-eQBFWLljs3wF5jPkM";
 
     // 1. Buscar hospitais próximos
     const nearby = await axios.get(
