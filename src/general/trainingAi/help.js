@@ -22,11 +22,12 @@ você deve dizer exatamente como é que a organização vai poder ajudar a elimi
       }
     ],
   };
-  const modelEnv  = process.env.GEMINI_MODEL;
-  const model = ai.getGenerativeModel({ 
-    model: modelEnv || 'gemini-1.5-pro-latest', 
-    
-    generationConfig: config });
+  const modelEnv = process.env.GEMINI_MODEL;
+  const model = ai.getGenerativeModel({
+    model: modelEnv || 'gemini-1.5-pro-latest',
+
+    generationConfig: config
+  });
 
   const chat = model.startChat({
     history: [],

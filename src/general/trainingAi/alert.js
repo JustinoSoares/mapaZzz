@@ -103,6 +103,6 @@ const { Json } = require("sequelize/lib/utils");
     }
     return JSON.parse(result.response.text());
   }
-  run();
+
   
   module.exports = { run };
