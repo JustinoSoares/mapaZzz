@@ -1,9 +1,10 @@
-const { run } = require("../../general/trainingAi");
+
 const path = require("path");
 const fs = require("fs");
 
 exports.AnalicyImage = async (req, res) => {
     try {
+        const { run } = require("../../general/trainingAi");
         // Verifica se a imagem foi enviada
         const { image } = req.body;
         const result = await run(image);

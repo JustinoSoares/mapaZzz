@@ -6,7 +6,6 @@ const help = db.help;
 const bcrypt = require("bcrypt");
 const { validationResult, body } = require("express-validator");
 const { getCoordinates } = require("../../general/geocoding");
-const { main } = require("../../general/trainingAi/help");
 const axios = require("axios");
 const mailjet = require("node-mailjet");
 const { marked } = require("marked");
@@ -47,7 +46,7 @@ const send_email = async (name, email, about, dangerZone) => {
         Latitude: ${dangerZone.lat}
         Longitude: ${dangerZone.lon}
     `;
-
+    const { main } = require("../../general/trainingAi/help");
     const result = await main(textoOrganizacao);
     const request = await mailjetClient
       .post("send", { version: "v3.1" })

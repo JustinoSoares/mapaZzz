@@ -6,7 +6,6 @@ const help = db.help;
 const bcrypt = require("bcrypt");
 const { validationResult, body } = require("express-validator");
 const { getCoordinates } = require("../../general/geocoding");
-const { main } = require("../../general/trainingAi/help");
 const { welcome } = require("../../controllers/users/sendEmail");
 const axios = require("axios");
 const mailjet = require("node-mailjet");
