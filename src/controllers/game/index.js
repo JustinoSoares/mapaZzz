@@ -10,7 +10,8 @@ exports.getQuestion = async (req, res) => {
     } catch (error) {
         console.error("Error processing question:", error);
         res.status(500).json({
-            error: "An error occurred while processing the question."
+            error: "An error occurred while processing the question.",
+            message : error.message,
         });
     }
 }
