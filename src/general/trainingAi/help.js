@@ -24,7 +24,7 @@ você deve dizer exatamente como é que a organização vai poder ajudar a elimi
   };
   const modelEnv = process.env.GEMINI_MODEL;
   const model = ai.getGenerativeModel({
-    model: modelEnv || 'gemini-1.5-pro-latest',
+    model: "gemini-2.0-flash-lite" || "gemini-2.0-flash" || "gemini-1.5-pro-latest",
 
     generationConfig: config
   });
