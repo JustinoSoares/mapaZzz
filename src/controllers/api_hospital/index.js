@@ -94,7 +94,7 @@ exports.most_effected = async (req, res) => {
       ).map(async (zone) => {
         const zoneData = await DangerZone.findOne({
           where: { id: zone.dangerZoneId },
-          attributes: ["id", "address", "description", "image", "lat", "lon"],
+          attributes: ["id", "address", "description", "image", "lat", "lon", "level", "objectsFinds"],
         });
 
         return {
@@ -105,6 +105,9 @@ exports.most_effected = async (req, res) => {
           latitude: zoneData.lat,
           longitude: zoneData.lon,
           number_checkers: zoneData.length || 0,
+          level : zoneData.level,
+          objectsFinds: zoneData.objectsFinds
+          
         };
       })
     );
