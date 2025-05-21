@@ -104,10 +104,9 @@ exports.most_effected = async (req, res) => {
           photo: zoneData.image,
           latitude: zoneData.lat,
           longitude: zoneData.lon,
-          number_checkers: zoneData.length || 0,
-          level : zoneData.level,
-          objectsFinds: zoneData.objectsFinds
-          
+          number_checkers: zone.dataValues.count || 0,
+          level: zoneData.level,
+          objectsFinds: zoneData.objectsFinds,
         };
       })
     );
@@ -187,86 +186,74 @@ exports.nearbyHospitals = async (req, res) => {
         message: "Dados de localização inválido",
       });
     }
-    const googleKey = "AIzaSyCnRdV8XWB0p04Aa-eQBFWLljs3wF5jPkM";
+    const orsApiKey = '5b3ce3597851110001cf62487875890facf341089ce7830c6c468e5c';
 
-    // 1. Buscar hospitais próximos
-    const nearby = await axios.get(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json",
-      {
-        params: {
-          location: `${latitude},${longitude}`,
-          radius: 5000,
-          type: "hospital",
-          key: googleKey,
-        },
+    const query = ` [out:json]; (
+        node["amenity"="hospital"](around:5000, ${latitude}, ${longitude});
+        node["amenity"="clinic"](around:5000, ${latitude}, ${longitude});
+      );
+      out body;`;
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      function toRad(x) {
+        return (x * Math.PI) / 180;
       }
-    );
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
 
-    console.log("Hospitais encontrados:", nearby.data);
-    const hospitais = nearby.data.results;
-    console.log("Hospitais brutos:", JSON.stringify(hospitais, null, 2));
-    // 2. Buscar detalhes para cada hospital
-    const detalhesHospitais = await Promise.all(
-      hospitais.map(async (hospital) => {
-        try {
-          const placeId = hospital.place_id;
-          const detalhes = await axios.get(
-            "https://maps.googleapis.com/maps/api/place/details/json",
-            {
-              params: {
-                place_id: placeId,
-                key: googleKey,
-                fields:
-                  "name,formatted_address,formatted_phone_number,geometry,opening_hours,rating,user_ratings_total",
-              },
-            }
-          );
+    async function getTravelInfo(start, end) {
+      const url = 'https://api.openrouteservice.org/v2/directions/driving-car';
+      const response = await fetch(`${url}?api_key=${orsApiKey}&start=${start[1]},${start[0]}&end=${end[1]},${end[0]}`);
+      const data = await response.json();
+    
+      const distanceKm = data.features[0].properties.segments[0].distance / 1000;
+      const durationMin = data.features[0].properties.segments[0].duration / 60;
+    
+      return {
+        distance_km: distanceKm.toFixed(2),
+        duration_min: durationMin.toFixed(1),
+      };
+    }
 
-          const info = detalhes.data.result;
+    const overpass = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      body: query,
+    });
+    const data = await overpass.json();
+  
+    const locais = data.elements
+      .map(el => ({
+        name: el.tags?.name || 'Sem nome',
+        phone: el.tags?.phone || 'Sem telefone',
+        address: `${el.tags?.['addr:street'] || ''} ${el.tags?.['addr:housenumber'] || ''}, ${el.tags?.['addr:city'] || ''}`,
+        lat: el.lat,
+        lon: el.lon,
+        distance: haversineDistance(latitude, longitude, el.lat, el.lon),
+      }))
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 6);
+  
+    for (const local of locais) {
+      const travel = await getTravelInfo(
+        [latitude, longitude],
+        [local.lat, local.lon]
+      );
+      local.distance_km = travel.distance_km;
+      local.duration_min = travel.duration_min;
+    }
+    return res.status(200).json(locais)
 
-          const distancia = await axios.get(
-            "https://maps.googleapis.com/maps/api/distancematrix/json",
-            {
-              params: {
-                origins: `${latitude},${longitude}`,
-                destinations: `${info.geometry.location.lat},${info.geometry.location.lng}`,
-                key: googleKey,
-                mode: "driving",
-              },
-            }
-          );
-
-          const distanciaInfo = distancia.data.rows[0].elements[0];
-
-          return {
-            name: info.name,
-            address: info.formatted_address,
-            phone: info.formatted_phone_number || "Telefone não disponível",
-            is_open: info.opening_hours?.open_now || false,
-            eval: info.rating,
-            all_evaluations: info.user_ratings_total,
-            distance: distanciaInfo.distance?.text,
-            duration: distanciaInfo.duration?.text,
-            duration_value: distanciaInfo.duration?.value,
-            latitude: info.geometry.location.lat,
-            longitude: info.geometry.location.lng,
-          };
-        } catch (err) {
-          console.error("Erro ao buscar detalhes de hospital:", err.message);
-          return null; // ou retorne info parcial se quiser
-        }
-      })
-    );
-    // 3. Ordenar do mais próximo ao mais distante
-    // Filtrar hospitais nulos
-    const filtrado = detalhesHospitais.filter((h) => h !== null);
-
-    // Ordenar
-    filtrado.sort((a, b) => a.duration_value - b.duration_value);
-
-    return res.json(filtrado);
-  } catch (error) {
-    console.error("Erro ao buscar hospitais:", error.message);
-    return res.status(500).json({ error: "Erro ao buscar hospitais" });
+  } catch (err) {
+    console.log("Erro ao buscar detalhes de hospital:", err.message);
+    return  res.status(200).json({
+      message: "Ocorreu um erroa ao pegar hospitais"
+    }); // ou retorne info parcial se quiser
   }
 };

@@ -69,8 +69,7 @@ exports.login = async (req, res) => {
         phone: user.phone,
         role: user.tipo_user,
       },
-      secret,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      secret
     );
 
     return res.status(200).json({
