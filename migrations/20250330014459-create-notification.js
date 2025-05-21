@@ -11,11 +11,11 @@ module.exports = {
       },
       lat: {
         type: Sequelize.DECIMAL(10, 8),
-        allowNull: false,
+        allowNull: true,
       },
       lon: {
         type: Sequelize.DECIMAL(11, 8),
-        allowNull: false,
+        allowNull: true,
       },
       typeNotification: {
         type: Sequelize.ENUM('risco', 'surto', 'educação', 'alerta', 'clima'),

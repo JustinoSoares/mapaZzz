@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     lat: {
       type: DataTypes.DECIMAL(10, 8),
-      allowNull: false,
+      allowNull: true,
     },
     lon: {
       type: DataTypes.DECIMAL(11, 8),
-      allowNull: false,
+      allowNull: true,
     },
     typeNotification: {
       type: DataTypes.ENUM('risco', 'surto', 'educação', 'alerta', 'clima'),
