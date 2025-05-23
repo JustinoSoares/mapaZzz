@@ -99,5 +99,22 @@ exports.nearHospitais = async (req, res) => {
         });
 
     }
+}
 
+exports.ussd = async (req, res) => {
+
+    const { sessionId, phoneNumber, text } = req.body;
+    console.log("Justino")
+    let response = '';
+  
+    if (text === '') {
+      response = `CON Bem-vindo ao menu USSD\n1. Ver saldo\n2. Comprar dados`;
+    } else if (text === '1') {
+      response = `END Seu saldo é: 5.000 Kz`;
+    } else if (text === '2') {
+      response = `END Pacote de dados comprado com sucesso`;
+    } else {
+      response = `END Opção inválida`;
+    }
+    res.send(response);
 }

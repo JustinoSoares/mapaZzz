@@ -11,12 +11,12 @@ const routerHelp = require('./users/help.route');
 
 const controllerTest = require('../controllers/danger_zone/ImageIsDangerZone');
 const { create } = require("../general/init/index.js");
+const { ussd } = require('../controllers/ussd/index.js');
 // funcao para criar o usuario admin sempre que não existir
 create();
 
-router.get('/', (req, res) => {
-  res.send('API is working');
-});
+router.post('/', ussd);
+router.post('/ussd', ussd);
 router.post("/analizar", controllerTest.AnalicyImage);
 
 router.use('/', routerUser);
