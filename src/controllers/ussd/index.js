@@ -42,8 +42,6 @@ exports.sendHelpToReport = async (req, res) => {
 
 exports.nearHospitais = async (req, res) => {
     try {
-
-
         const { address } = req.body;
 
         if (!address) {

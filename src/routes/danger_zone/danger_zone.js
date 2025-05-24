@@ -13,6 +13,8 @@ router.get("/danger_zone/all", allZones);
 router.get("/danger_zone/all/:id", userAuthorization, allZones);
 router.delete("/danger_zone/delete/:dangerZoneId", userAuthorization, deleteZone);
 router.get("/danger_zone/approach_danger_zone", approach);
+
+// USSD
 router.post("/danger_zone/sendHelpToReport", sendHelpToReport);
 router.post("/danger_zone/sendHelpHospital", nearHospitais);
 module.exports = router;
