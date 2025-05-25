@@ -195,17 +195,33 @@ exports.getNotification = async (req, res) => {
 
     if (!userId) {
         return res.status(400).json({
-            message: 'userId é obrigatório.'
+            message: 'Não authorizado.'
         });
+    }
+
+    const user = await User.findByPK(userId);
+    if (!user) {
+        return res.status(400).json({
+            message : "Usuário nao existe"
+        })
     }
 
     try {
         // pegar as notificações do usuário ou que o userId é null
         const notifications = await notification.findAll({
             where: {
-                [Op.or]: [
-                    { userId: null },
-                    { userId: userId }
+                [Op.and]: [
+                    {
+                        createdAt: {
+                            [Op.gte]: user.createdAt // só notificações depois (ou no mesmo momento) da criação da conta
+                        }
+                    },
+                    {
+                        [Op.or]: [
+                            { userId: null },       // notificações públicas
+                            { userId: user.id }     // notificações específicas para o usuário
+                        ]
+                    }
                 ]
             },
             order: [['createdAt', 'DESC']],
