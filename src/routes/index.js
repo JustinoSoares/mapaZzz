@@ -15,8 +15,11 @@ const { ussd } = require('../controllers/ussd/index.js');
 // funcao para criar o usuario admin sempre que não existir
 create();
 
-router.post('/', ussd);
-router.post('/ussd', ussd);
+router.get('/', (req, res) =>{
+    return res.json({
+        "message": "Api rodando 100%",
+    });
+});
 router.post("/analizar", controllerTest.AnalicyImage);
 
 router.use('/', routerUser);

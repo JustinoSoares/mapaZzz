@@ -40,10 +40,14 @@ exports.detalhes = async (req, res) => {
       });
     }
 
+    const lengthUser = await User.count();
+
     const danger_zone = await DangerZone.findAll({
      order : [['createdAt', 'DESC']],
       limit: 5,
     });
+
+    const quantidade_danger_zones = await DangerZone.count();
     const danger_zonesOwner = await DangerZone.count({
       where: {
         userId: userId,
@@ -55,9 +59,10 @@ exports.detalhes = async (req, res) => {
       status: true,
       data: user,
       detalhes : {
-        danger_zones: danger_zone,
-        quantidade_danger_zones: danger_zone.length,
+        quantidade_danger_zones,
+        quantidade_users: lengthUser,
         danger_zonesOwner: danger_zonesOwner,
+        danger_zones: danger_zone,
       },
     });
   } catch (error) {

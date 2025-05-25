@@ -83,7 +83,7 @@ exports.nearHospitais = async (req, res) => {
         const results = hospitalData.elements.map((el) => ({
             nome: el.tags?.name || 'Sem nome',
             telefone: el.tags?.phone || 'Sem telefone',
-            endereco: `${el.tags?.['addr:street'] || ''} ${el.tags?.['addr:housenumber'] || ''} ${el.tags?.['addr:city'] || ''}`.trim(),
+            endereco: `${el.tags?.['addr:street'] || ''} ${el.tags?.['addr:housenumber'] || ''} ${el.tags?.['addr:city'] || ''}`.trim() || address,
             lat: el.lat,
             lon: el.lon,
         }));
